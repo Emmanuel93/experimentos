@@ -5,6 +5,7 @@ from keras.layers import Input, merge, Lambda
 from keras.layers.merge import Concatenate
 from keras import backend as K
 
+
 import tensorflow as tf
 session_config = tf.ConfigProto()
 session_config.gpu_options.allow_growth = True
