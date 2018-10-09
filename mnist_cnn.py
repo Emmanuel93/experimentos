@@ -88,7 +88,8 @@ for x in batches:
          	  epochs=y,
                   verbose=1,
                   validation_data=(x_test, y_test))
-	        score = model.evaluate(x_test, y_test, verbose=0)
+	        
+		score = model.evaluate(x_test, y_test, verbose=0)
 
 		horaFin = time.strftime("%H:%M:%S")
 		fechaFin = time.strftime("%d-%m-%Y")		
