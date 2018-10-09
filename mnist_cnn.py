@@ -13,6 +13,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras import backend as K
+import datetime
 #============ Multi-GPU ==========
 from multi_gpu import to_multi_gpu
 
@@ -21,9 +22,9 @@ num_classes = 10
 # input image dimensions
 img_rows, img_cols = 28, 28
 
-batches = [1000]#,2000,3000,4000,5000,6000,7000,8000,9000,10000]
+batches = [1000,2000,3000,4000,5000]
 
-epochs = [10]#,20,30,40,50,60,70,80,90,100]
+epochs = [10,20,30,40,50,60,70,80,90,100]
 
 # the data, shuffled and split between train and test sets
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
@@ -74,13 +75,14 @@ lotes = []
 errores = []
 epocas = []
 precisiones = []
+segunderos = []
 
 for x in batches:
 	for y in epochs:
 		
 		horaInicio = time.strftime("%H:%M:%S")
 		fechaInicio = time.strftime("%d-%m-%Y")
-		
+		horaInicial = datetime.datetime.now()
 		model.fit(x_train, y_train,
         	  batch_size=x,
          	  epochs=y,
@@ -90,7 +92,12 @@ for x in batches:
 
 		horaFin = time.strftime("%H:%M:%S")
 		fechaFin = time.strftime("%d-%m-%Y")		
-		
+		horaFinal = datetime.datetime.now()
+		diferencia = horaFinal - horaInicial
+		aux = pd.Timedelta(diferencia)
+		segundosDiferencia = aux.total_seconds() 
+		segunderos.append(segundosDiferencia)
+		print("total segundos",segundosDiferencia)
 		lotes.append(x)
 		epocas.append(y)
 		tiemposIniciales.append(fechaInicio+" "+horaInicio)
@@ -105,12 +112,13 @@ for x in batches:
 
 df = pd.DataFrame({ 'Epocas'        : epocas,
 		    'Batche Size'   : lotes,
+		    'segundos'      : segunderos,			
 		    'Tiempo Inicial': tiemposIniciales,
 		    'Tiempos Final' : tiemposFinales,
 		    'error'         : errores,
 		    'precisionn'    : precisiones } )
 
-writer = pd.ExcelWriter('Entrenamiento.xlsx', engine='xlsxwriter')
+writer = pd.ExcelWriter('CPU.xlsx', engine='xlsxwriter')
 
 df.to_excel(writer, sheet_name='entrenamiento')
 
